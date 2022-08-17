@@ -30,6 +30,7 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@user.com
       - PGADMIN_DEFAULT_PASSWORD=123456
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
     ports:
       - 9000:80
     depends_on:
