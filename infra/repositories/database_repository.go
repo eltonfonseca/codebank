@@ -72,3 +72,44 @@ func (repo *DatabaseRepository) updateBalance(cc domains.CreditCard) error {
 
 	return nil
 }
+
+func (repo *DatabaseRepository) CreateCreditCard(cc domains.CreditCard) error {
+	query := `INSERT INTO credit_cards(
+		id,
+		name,
+		number,
+		expiration_month,
+		expiration_year,
+		cvv,
+		balance,
+		balance_limit
+	) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`
+	stmt, err := repo.db.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(
+		cc.ID,
+		cc.Name,
+		cc.Number,
+		cc.ExpirationMonth,
+		cc.ExpirationYear,
+		cc.CVV,
+		cc.Balance,
+		cc.Limit,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	err = stmt.Close()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
