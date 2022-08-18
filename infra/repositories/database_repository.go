@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/eltonfonseca/codebank/domains"
 )
@@ -112,4 +113,21 @@ func (repo *DatabaseRepository) CreateCreditCard(cc domains.CreditCard) error {
 	}
 
 	return nil
+}
+
+func (repo *DatabaseRepository) GetCreditCard(cc domains.CreditCard) (domains.CreditCard, error) {
+	var c domains.CreditCard
+
+	query := "SELECT id, balance, balance_limit, FROM credit_cards WHERE number=$1"
+	stmt, err := repo.db.Prepare(query)
+
+	if err != nil {
+		return c, err
+	}
+
+	if err = stmt.QueryRow(cc.Number).Scan(&c.ID, &c.Balance, &c.Limit); err != nil {
+		return c, errors.New("Credit Card does not exists!")
+	}
+
+	return c, nil
 }
